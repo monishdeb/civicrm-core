@@ -1758,11 +1758,12 @@ function _civicrm_api3_validate_integer(&$params, &$fieldName, &$fieldInfo, $ent
       if ('unknown-user' === $realContactId) {
         throw new API_Exception("\"$fieldName\" \"{$fieldValue}\" cannot be resolved to a contact ID", 2002, array('error_field' => $fieldName,"type"=>"integer"));
       } elseif (is_numeric($realContactId)) {
-        $params[$fieldName]  = $fieldValue = $realContactId;
+        $params[$fieldName] = $fieldValue = $realContactId;
       }
     }
     if (!empty($fieldInfo['pseudoconstant']) || !empty($fieldInfo['options'])) {
       _civicrm_api3_api_match_pseudoconstant($fieldValue, $entity, $fieldName, $fieldInfo);
+      $params[$fieldName] = $fieldValue;
     }
 
     // After swapping options, ensure we have an integer(s)
