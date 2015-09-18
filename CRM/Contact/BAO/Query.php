@@ -2538,7 +2538,14 @@ class CRM_Contact_BAO_Query {
           continue;
 
         case 'civicrm_group':
-          $from .= " $side JOIN civicrm_group ON (civicrm_group.id = civicrm_group_contact.group_id OR civicrm_group.id = civicrm_group_contact_cache.group_id) ";
+          $from .= " $side JOIN (
+             ( SELECT group_id, contact_id
+               FROM civicrm_group_contact )
+             UNION
+             ( SELECT group_id, contact_id
+               FROM civicrm_group_contact_cache )) as `group` ON group.contact_id = contact_a.id
+             $side JOIN civicrm_group ON civicrm_group.id = group.group_id
+          ";
           continue;
 
         case 'civicrm_group_contact':
@@ -2781,8 +2788,17 @@ class CRM_Contact_BAO_Query {
   public function group(&$values) {
     list($name, $op, $value, $grouping, $wildcard) = $values;
 
+    if (is_array($value) && in_array(key($value), CRM_Core_DAO::acceptedSQLOperators(), TRUE)) {
+      $op = key($value);
+      $value = $value[$op];
+    }
+
     // Replace pseudo operators from search builder
     $op = str_replace('EMPTY', 'NULL', $op);
+
+    if (strpos($op, 'NULL')) {
+      $value = NULL;
+    }
 
     if (count($value) > 1) {
       if (strpos($op, 'IN') === FALSE && strpos($op, 'NULL') === FALSE) {
