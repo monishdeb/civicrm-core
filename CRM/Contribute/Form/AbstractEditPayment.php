@@ -209,7 +209,15 @@ class CRM_Contribute_Form_AbstractEditPayment extends CRM_Contact_Form_Task {
    * Pre process function with common actions.
    */
   public function preProcess() {
-    $this->_contactID = CRM_Utils_Request::retrieve('cid', 'Positive', $this);
+    //CRM-12989, allocate entity and contact id, retrieved from controller->_entryURL rather than REQUEST to
+    //resolve overriding of values due to opening multiple tabs although a hackish fix
+    if ($this->controller->_entryURL &&
+      ($queryParams = str_replace('&amp;', '&', parse_url($this->controller->_entryURL, PHP_URL_QUERY)))
+    ) {
+      parse_str($queryParams, $urlParts);
+      $this->_contactID = CRM_Utils_Array::value('cid', $urlParts);
+      $this->_id = CRM_Utils_Array::value('id', $urlParts);
+    }
     $this->assign('contactID', $this->_contactID);
     CRM_Core_Resources::singleton()->addVars('coreForm', array('contact_id' => (int) $this->_contactID));
     $this->_action = CRM_Utils_Request::retrieve('action', 'String', $this, FALSE, 'add');

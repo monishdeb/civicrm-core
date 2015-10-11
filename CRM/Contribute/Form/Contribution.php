@@ -228,8 +228,6 @@ class CRM_Contribute_Form_Contribution extends CRM_Contribute_Form_AbstractEditP
 
     $this->assign('action', $this->_action);
 
-    // Get the contribution id if update
-    $this->_id = CRM_Utils_Request::retrieve('id', 'Positive', $this);
     if (!empty($this->_id)) {
       $this->assign('contribID', $this->_id);
     }

@@ -99,7 +99,7 @@ class CRM_Member_Form extends CRM_Contribute_Form_AbstractEditPayment {
     parent::preProcess();
     $params = array();
     $params['context'] = CRM_Utils_Request::retrieve('context', 'String', $this, FALSE, 'membership');
-    $params['id'] = CRM_Utils_Request::retrieve('id', 'Positive', $this);
+    $params['id'] = $this->_id;
     $params['mode'] = CRM_Utils_Request::retrieve('mode', 'String', $this);
 
     $this->setContextVariables($params);
