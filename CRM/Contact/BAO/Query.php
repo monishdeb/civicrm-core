@@ -5758,6 +5758,8 @@ AND   displayRelType.is_active = 1
    * @param mixed $fieldValue
    * @param string $op
    * @param array $pseudoExtraParam
+   * @param int $type
+   *   Type of the field per CRM_Utils_Type
    *
    * @return array
    */
