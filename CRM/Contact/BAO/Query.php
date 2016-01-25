@@ -4438,9 +4438,7 @@ civicrm_relationship.is_permission_a_b = 0
       $from = CRM_Utils_Array::value($customFieldName . '_from', $formValues, NULL);
       $to = CRM_Utils_Array::value($customFieldName . '_to', $formValues, NULL);
 
-      $customFieldID = CRM_Core_BAO_CustomField::getKeyID($customFieldName);
-      $customFieldType = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_CustomField', $customFieldName, 'data_type');
-      if ($customFieldType == 'Date') {
+      if (self::isCustomDateField($customFieldName)) {
         list($from, $to) = CRM_Utils_Date::getFromTo(NULL, $from, $to);
       }
     }
@@ -4463,6 +4461,23 @@ civicrm_relationship.is_permission_a_b = 0
       0,
       0,
     );
+  }
+
+  /**
+   * Are we dealing with custom field of type date.
+   *
+   * @param $fieldName
+   *
+   * @return bool
+   */
+  public static function isCustomDateField($fieldName) {
+    if (($customFieldID = CRM_Core_BAO_CustomField::getKeyID($fieldName)) == FALSE) {
+      return FALSE;
+    }
+    if ('Date' == civicrm_api3('CustomField', 'getvalue', array('id' => $customFieldID, 'return' => 'data_type'))) {
+      return TRUE;
+    }
+    return FALSE;
   }
 
   /**
@@ -5275,7 +5290,9 @@ SELECT COUNT( conts.total_amount ) as cancel_count,
           // We could get away with keeping this in 4.6 if we make it such that it throws an enotice in 4.7 so
           // people have to de-slopify it.
           if (!empty($value[0])) {
-            $dragonPlace = $iAmAnIntentionalENoticeThatWarnsOfAProblemYouShouldReport;
+            if ($op != 'BETWEEN') {
+              $dragonPlace = $iAmAnIntentionalENoticeThatWarnsOfAProblemYouShouldReport;
+            }
             if (($queryString = CRM_Core_DAO::createSqlFilter($field, array($op => $value), $dataType)) != FALSE) {
               return $queryString;
             }
@@ -5796,6 +5813,9 @@ AND   displayRelType.is_active = 1
     }
     elseif (!empty($pseudoOptions) && array_key_exists($fieldValue, $pseudoOptions)) {
       $fieldValue = $pseudoOptions[$fieldValue];
+    }
+    elseif ($type === CRM_Utils_Type::T_DATE) {
+      $fieldValue = CRM_Utils_Date::customFormat($fieldValue);
     }
 
     return array(CRM_Utils_Array::value($op, $qillOperators, $op), $fieldValue);
