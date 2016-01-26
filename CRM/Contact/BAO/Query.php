@@ -5763,7 +5763,7 @@ AND   displayRelType.is_active = 1
    *
    * @return array
    */
-  public static function buildQillForFieldValue($daoName = NULL, $fieldName, $fieldValue, $op, $pseudoExtraParam = array()) {
+  public static function buildQillForFieldValue($daoName = NULL, $fieldName, $fieldValue, $op, $pseudoExtraParam = array(), $type = CRM_Utils_Type::T_INT) {
     $qillOperators = CRM_Core_SelectValues::getSearchBuilderOperators();
 
     if ($fieldName == 'activity_type_id') {
