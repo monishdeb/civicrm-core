@@ -30,6 +30,9 @@
       "PHPUnit_": ["packages/"],
       "Civi": "",
       "Civi\\": [".", "tests/phpunit/"]
+    },
+    "psr-4": {
+        "Civi\\Core\\Composer\\": "Civi/Core/Composer"
     }
   },
   "include-path": ["vendor/tecnickcom"],
@@ -57,7 +60,8 @@
     "pear/Net_socket": "1.0.*",
     "civicrm/civicrm-setup": "~0.2.0",
     "guzzlehttp/guzzle": "^6.3",
-    "psr/simple-cache": "~1.0.1"
+    "psr/simple-cache": "~1.0.1",
+    "happycoding/civicrm-library-for-drupal":  "dev-master"
   },
   "repositories": [
     {
@@ -71,7 +75,8 @@
       "bash tools/scripts/composer/tcpdf-cleanup.sh",
       "bash tools/scripts/composer/pear-exception-fix.sh",
       "bash tools/scripts/composer/net-smtp-fix.sh",
-      "bash tools/scripts/composer/phpword-jquery.sh"
+      "bash tools/scripts/composer/phpword-jquery.sh",
+      "Civi\\Core\\Composer\\Composer::installAsset"
     ],
     "post-update-cmd": [
       "bash tools/scripts/composer/dompdf-cleanup.sh",
